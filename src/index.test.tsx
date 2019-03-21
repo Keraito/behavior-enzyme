@@ -22,10 +22,10 @@ describe('The Enzyme behavior wrapper', () => {
       Object.getPrototypeOf(behaviorWrapperComponent)
     );
     const bwPropertyKeys = Object.getOwnPropertyNames(behaviorWrapperComponent);
-    const bwKeys = [...bwPrototypeKeys, bwPropertyKeys];
+    const bwKeys = [...bwPrototypeKeys, ...bwPropertyKeys];
     expect(bwKeys).not.toHaveLength(0);
     expect(bwKeys).not.toEqual(rwKeys);
-    expect(bwKeys).toContain(rwKeys);
+    expect(bwKeys).toEqual(expect.arrayContaining(rwKeys));
   });
 
   describe('should retain all of the functions of a React Wrapper', () => {
