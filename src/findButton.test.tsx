@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { mount } from 'enzyme';
-import { findButton, wrap } from '.';
-import { BehaviorReactWrapper } from './index';
+import { findButton, findButtonByText, clickElement } from '.';
 
 const openText = 'open';
 const closedText = 'closed';
@@ -21,8 +20,8 @@ const TextToggler = () => {
 describe('The FindButton function', () => {
   test.skip('should return a BehaviorReactWrapper object', () => {
     const SomeElement = () => <div />;
-    const component = wrap(mount(<SomeElement />));
-    const returnedWrapper = component.findButton();
+    const component = mount(<SomeElement />);
+    const returnedWrapper = findButton(component);
   });
 
   test('should correctly find the single button in a simple React component', () => {
@@ -31,9 +30,9 @@ describe('The FindButton function', () => {
         <button>Some dummy text</button>
       </div>
     );
-    const component = wrap(mount(<DummyElement />));
-    expect(component.findButton()).toHaveLength(1);
-    expect(component.findButton().text()).toBe('Some dummy text');
+    const component = mount(<DummyElement />);
+    expect(findButton(component)).toHaveLength(1);
+    expect(findButton(component).text()).toBe('Some dummy text');
   });
 });
 
@@ -46,8 +45,8 @@ describe('The FindButtonByText function', () => {
         <button>some weird text</button>
       </div>
     );
-    const component = wrap(mount(<DummyElement />));
-    const buttonsWithButtonText = component.findButtonByText('button');
+    const component = mount(<DummyElement />);
+    const buttonsWithButtonText = findButtonByText(component, 'button');
     expect(buttonsWithButtonText).toHaveLength(2);
     expect(buttonsWithButtonText.map(x => x.text())).toEqual([
       'button text',
@@ -56,13 +55,12 @@ describe('The FindButtonByText function', () => {
   });
 
   test('should click properly', () => {
-    const component = wrap(mount(<TextToggler />));
+    const component = mount(<TextToggler />);
     expect(component.text()).toContain(closedText);
-    const toggleButton = component.findButtonByText('toggle');
-    console.log(Object.getPrototypeOf(toggleButton));
+    const toggleButton = findButtonByText(component, 'toggle');
     expect(toggleButton).toHaveLength(1);
-    toggleButton.clickElement();
-    expect(component.text()).toContain(closedText);
-    expect(component.text).toContain(openText);
+    clickElement(toggleButton);
+    expect(component.text()).not.toContain(closedText);
+    expect(component.text()).toContain(openText);
   });
 });
